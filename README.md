@@ -25,7 +25,6 @@ python showmap.py -i [archivo_nmap]
 ## To Do
 Implementar las siguientes funcionalidades
 ```
-	-ip	  Imprimir los puertos en el siguiente formato -> 10.0.0.1 (80/tcp).
 	-u	  Imprimir los puertos http en formato url -> http://10.0.0.1:80.
 	-vuln	  Imprimir un resumen de las vulnerabilidades reportadas por Nmap.
 ```
