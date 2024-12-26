@@ -9,8 +9,10 @@ python showmap.py -i [archivo_nmap]
 ##### Opciones:
 ```
  	-i      Archivo de entrada con el output de Nmap.
- 	-s      Aplica filtros de busqueda.
  	-csv    Exporta la salida en formato CSV.
+	-s      Aplica filtros de busqueda.
+	-ip	Imprime IPs y puertos abiertos en formato [IP] (port/tcp).
+	-n	Desactiva los colores en la salida.
 ```
 
 ## Instalación
