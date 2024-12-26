@@ -12,7 +12,7 @@ console = Console()
 
 # Variables globales
 script_name = "showmap.py"
-script_version = "v1.0"
+script_version = "v1.1"
 url_repo = "https://github.com/fedeScripts/showmap.py" 
 
 # Mensajes de error
@@ -55,9 +55,7 @@ def print_banner(no_colour=False):
     url_text = Text(url_repo, style=f"link {url_repo}") 
     banner.append(f"{url_text}".center(banner_width) + "\n", style=url_colour)
     banner.append("\n  " + "﹉" * 23 + "\n", style=separator_colour)
-
     console.print(banner)
-
 
 
 # Parsear el archivo de entrada
@@ -121,6 +119,7 @@ def print_table(data, output_file, no_colour=False):
         table.add_row(*row)
     console.print(table)
 
+
 # Escribir la salida en formato CSV
 def write_to_csv(data, output_file, no_colour=False):
     headers = ["Host", "Port", "State", "Service", "Version"]
@@ -143,6 +142,7 @@ def print_ip_ports(data, no_colour=False):
         print("\n".join(results))
     else:
         console.print("\n".join(results), style="cyan")
+
 
 # Parsear los argumentos
 def parse_arguments():
