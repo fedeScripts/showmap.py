@@ -29,32 +29,31 @@ MESSAGES = {
 # Indicadores de mensaje
 MESSAGE_INDICATORS = {
     "colored_error": "[yellow][!][/yellow]",
-    "colored_info": "[cyan]\[i][/cyan]",
+    "colored_info": "[cyan][+][/cyan]",
     "no_colored_error": "[!]",
-    "no_colored_info": "[i]",
+    "no_colored_info": "[+]",
 }
+
 
 # Banner
 def print_banner(no_colour=False):
-    if no_colour:
-        title_colour="bold black on white"
-        url_colour="white italic"
-        separator_colour="white"
-    else:
-        title_colour="bold white on medium_orchid"
-        url_colour="blue italic"
-        separator_colour="yellow"        
     banner_width = 50
+    banner_description = "Procesa el normal output (-oN) de Nmap"
+    colours = {
+        True: {"title": "bold black on white", "url": "white italic", "separator": "white"},
+        False: {"title": "bold white on medium_orchid", "url": "blue italic", "separator": "yellow"}
+    }
+    banner_colours = colours[no_colour]
     banner = Text()
-    title = f" {script_name} - {script_version} " 
-    spaces = " " * ((banner_width - len(title)) // 2) 
-    banner.append("\n\n" + spaces) 
-    banner.append(title, style=title_colour) 
+    title = f" {script_name} - {script_version} "
+    spaces = " " * ((banner_width - len(title)) // 2)
+    banner.append("\n\n" + spaces)
+    banner.append(title, style=banner_colours["title"])
     banner.append("\n\n")
-    banner.append("Procesa el normal output (-oN) de Nmap".center(banner_width) + "\n", style="bold")
+    banner.append(banner_description.center(banner_width) + "\n", style="bold")
     url_text = Text(url_repo, style=f"link {url_repo}") 
-    banner.append(f"{url_text}".center(banner_width) + "\n", style=url_colour)
-    banner.append("\n  " + "﹉" * 23 + "\n", style=separator_colour)
+    banner.append(f"{url_text}".center(banner_width) + "\n", style=banner_colours["url"])
+    banner.append("\n  " + "﹉" * 23 + "\n", style=banner_colours["separator"])
     console.print(banner)
 
 
@@ -78,6 +77,7 @@ def parse_nmap_output(file_path):
                 results.append([host, port, state, service, version])
     return results
 
+
 # Buscar por strings
 def search_data(data, search_string):
     search_terms = [term.strip().lower() for term in search_string.split(",")]
@@ -86,35 +86,24 @@ def search_data(data, search_string):
         if any(term in row[3].lower() or term in row[4].lower() or term in row[1] for term in search_terms)
     ]
 
+
 # Crear la tabla
-def print_table(data, output_file, no_colour=False):
-    indicator_key = f"no_colored_info" if no_colour else f"colored_info"
+def print_table(data, output_file, no_colour=False):  
+    colours = {
+        True: {"table": "white", "host": "white", "port": "white", "state": "white", "service": "white", "version": "white"},
+        False: {"table": "blue", "host": "yellow", "port": "green", "state": "blue", "service": "magenta", "version": "white"}
+    }
+    columns_colours = colours[no_colour]
+    indicator_key = "no_colored_info" if no_colour else "colored_info"
     indicator = MESSAGE_INDICATORS[indicator_key]
-    host_width=20
-    port_width=8
-    state_width=6
-    service_width=15
-    version_width=15
-    if no_colour:
-        table_colour="white"
-        host_colour="white"
-        port_colour="white"
-        state_colour="white"
-        service_colour="white"
-        version_colour="white"
-    else:
-        table_colour="blue"
-        host_colour="yellow"
-        port_colour="green"
-        state_colour="blue"
-        service_colour="magenta"
-        version_colour="white"
-    table = Table(title=f"{indicator} Resumen de {output_file}:\n", style=table_colour, title_style="bold", title_justify='left', show_edge=False, show_lines=False)
-    table.add_column("Host", style=host_colour, justify="left", min_width=host_width)
-    table.add_column("Port", style=port_colour, justify="left", min_width=port_width)
-    table.add_column("State", style=state_colour, justify="center", min_width=state_width)
-    table.add_column("Service", style=service_colour, justify="left", min_width=service_width)
-    table.add_column("Version", style=version_colour, justify="left", min_width=version_width)
+    table = Table(title=f"{indicator} Resumen de {output_file}:\n", style=columns_colours["table"], title_style="bold", title_justify='left', show_edge=False, show_lines=False) 
+    columns = [("Host", columns_colours["host"], 20), 
+               ("Port", columns_colours["port"], 8), 
+               ("State", columns_colours["state"], 6), 
+               ("Service", columns_colours["service"], 15), 
+               ("Version", columns_colours["version"], 15)]
+    for column, style, width in columns:
+        table.add_column(column, style=style, justify="left", min_width=width)
     for row in data:
         table.add_row(*row)
     console.print(table)
